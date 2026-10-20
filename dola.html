@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy 18th Birthday, Dola!</title>
+  <!-- Google Fonts & Canvas Confetti -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600;800&family=Sacramento&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --primary-pink: #ff758f;
+      --soft-pink: #ffb3c1;
+      --deep-purple: #130f26;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.18);
+      --gold: #ffd166;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 50% 10%, #2b1055 0%, #150928 60%, #080314 100%);
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      padding: 35px 15px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Ambient Floating Sky Decor */
+    .sky-decor {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floater {
+      position: absolute;
+      opacity: 0.65;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(105vh) rotate(0deg) scale(0.8);
+        opacity: 0;
+      }
+      20% { opacity: 0.8; }
+      80% { opacity: 0.8; }
+      100% {
+        transform: translateY(-15vh) rotate(360deg) scale(1.1);
+        opacity: 0;
+      }
+    }
+
+    /* Main Container */
+    .container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    /* Header Presentation Card */
+    .hero-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 30px;
+      padding: 45px 25px;
+      text-align: center;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Number 18 Emblem */
+    .milestone-emblem {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .milestone-circle {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255, 117, 143, 0.3), rgba(224, 86, 253, 0.3));
+      border: 2px dashed rgba(255, 209, 102, 0.8);
+      animation: spinEmblem 14s linear infinite;
+    }
+
+    @keyframes spinEmblem {
+      to { transform: rotate(360deg); }
+    }
+
+    .milestone-number {
+      position: relative;
+      font-size: 3.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffd166, #ff758f, #ffffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 15px rgba(255, 209, 102, 0.5));
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 20px;
+      background: linear-gradient(135deg, #ff758f, #e056fd);
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 15px rgba(255, 117, 143, 0.4);
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      background: linear-gradient(90deg, #ffffff, #ffb3c1, #ffd166);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nickname {
+      font-family: 'Sacramento', cursive;
+      font-size: 2.3rem;
+      color: #ffd166;
+      margin-top: -6px;
+      display: block;
+    }
+
+    /* Section Cards */
+    .section-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--card-border);
+      border-radius: 26px;
+      padding: 30px 22px;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #ffb3c1;
+    }
+
+    /* Interactive Cake Stage */
+    .cake-box {
+      width: 220px;
+      height: 160px;
+      margin: 20px auto;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .cake-layer {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: all 0.5s ease;
+    }
+
+    .layer-bottom {
+      bottom: 0;
+      width: 160px;
+      height: 60px;
+      background: linear-gradient(to right, #ff758f, #e056fd);
+      border-radius: 12px 12px 6px 6px;
+      border-bottom: 5px solid #c8235d;
+    }
+
+    .layer-top {
+      bottom: 55px;
+      width: 115px;
+      height: 50px;
+      background: linear-gradient(to right, #ff9bb2, #ff758f);
+      border-radius: 12px 12px 6px 6px;
+    }
+
+    .cream-drip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 14px;
+      background: #ffffff;
+      border-radius: 10px 10px 8px 8px;
+    }
+
+    .candle-stick {
+      position: absolute;
+      bottom: 105px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 32px;
+      background: repeating-linear-gradient(45deg, #ffd166, #ffd166 4px, #f72585 4px, #f72585 8px);
+      border-radius: 4px 4px 0 0;
+    }
+
+    .flame-element {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 18px;
+      background: #ffd166;
+      border-radius: 50% 50% 20% 20%;
+      box-shadow: 0 0 15px #ffd166, 0 0 25px #ff758f;
+      animation: flicker 0.6s infinite alternate ease-in-out;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .flame-element.blown {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-10px) scale(0.5);
+    }
+
+    @keyframes flicker {
+      0% { transform: translateX(-50%) scale(0.9) rotate(-3deg); }
+      100% { transform: translateX(-50%) scale(1.1) rotate(3deg); }
+    }
+
+    .cake-split .layer-top {
+      transform: translateX(-65%) rotate(-4deg);
+    }
+    .cake-split .layer-bottom {
+      transform: translateX(-35%) rotate(4deg);
+    }
+
+    /* Gift & Teddy Section */
+    .gift-wrap {
+      width: 130px;
+      height: 130px;
+      margin: 15px auto;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .gift-box {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #7000ff, #e056fd);
+      border-radius: 18px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 25px rgba(112, 0, 255, 0.4);
+      transition: transform 0.3s ease;
+    }
+
+    .gift-box:hover {
+      transform: scale(1.05);
+    }
+
+    .gift-ribbon-v {
+      position: absolute;
+      width: 22px;
+      height: 100%;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    .gift-ribbon-h {
+      position: absolute;
+      height: 22px;
+      width: 100%;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    .gift-lid {
+      position: absolute;
+      top: -12px;
+      left: -5%;
+      width: 110%;
+      height: 30px;
+      background: linear-gradient(135deg, #8a2be2, #f72585);
+      border-radius: 10px;
+      z-index: 2;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .teddy-reveal {
+      display: none;
+      font-size: 4.2rem;
+      animation: popTeddy 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      margin: 10px auto;
+    }
+
+    @keyframes popTeddy {
+      0% { transform: scale(0) translateY(50px); opacity: 0; }
+      70% { transform: scale(1.2) translateY(-10px); }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    /* Secret Letter Container */
+    .letter-card {
+      background: rgba(255, 245, 238, 0.05);
+      border: 1px dashed rgba(255, 179, 193, 0.4);
+      border-radius: 20px;
+      padding: 26px;
+      text-align: left;
+      position: relative;
+    }
+
+    .letter-header {
+      font-family: 'Caveat', cursive;
+      font-size: 1.9rem;
+      color: #ffd166;
+      margin-bottom: 12px;
+    }
+
+    .letter-body {
+      font-size: 0.98rem;
+      line-height: 1.8;
+      color: #f1f5f9;
+      font-style: italic;
+    }
+
+    .letter-body p {
+      margin-bottom: 12px;
+    }
+
+    .letter-sign {
+      font-family: 'Sacramento', cursive;
+      font-size: 2.1rem;
+      color: #ff758f;
+      text-align: right;
+      margin-top: 15px;
+    }
+
+    /* Button Controls */
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    .action-btn {
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      background: linear-gradient(135deg, #ff758f, #e056fd);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(255, 117, 143, 0.35);
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 117, 143, 0.55);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Sky Background Icons (Flowers, Stars, Moons, Teddies) -->
+  <div class="sky-decor" id="skyDecor"></div>
+
+  <div class="container">
+
+    <!-- 1. Header Card (No Photo Needed) -->
+    <header class="hero-card">
+      <div class="milestone-emblem">
+        <div class="milestone-circle"></div>
+        <div class="milestone-number">18</div>
+      </div>
+
+      <span class="badge">Official Milestone • 18th Birthday</span>
+      <h1>Happy 18th Birthday!</h1>
+      <span class="nickname">Dola the Cutie ✨</span>
+      <p style="color: #cbd5e1; font-size: 0.95rem; margin-top: 8px;">
+        Stepping into adulthood with elegance, sweetness, and infinite dreams.
+      </p>
+    </header>
+
+    <!-- 2. Interactive Cake & Candle Stage -->
+    <section class="section-card">
+      <div class="section-title">🎂 The 18th Birthday Cake</div>
+      <p style="font-size: 0.9rem; color: #cbd5e1;" id="cakeStatus">
+        Blow out your candle and make a secret wish!
+      </p>
+
+      <div class="cake-box" id="cakeBox" onclick="blowCandle()">
+        <div class="flame-element" id="flame"></div>
+        <div class="candle-stick"></div>
+        <div class="cake-layer layer-top">
+          <div class="cream-drip"></div>
+        </div>
+        <div class="cake-layer layer-bottom">
+          <div class="cream-drip"></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="action-btn" onclick="blowCandle()">💨 Blow Candle</button>
+        <button class="action-btn" onclick="cutCake()">🔪 Cut the Cake</button>
+      </div>
+    </section>
+
+    <!-- 3. Surprise Teddy Bear Gift Box -->
+    <section class="section-card">
+      <div class="section-title">🎁 A Sweet Surprise for Dola</div>
+      <p style="font-size: 0.9rem; color: #cbd5e1;">Tap the mystery box to unlock your gift!</p>
+
+      <div class="gift-wrap" id="giftBox" onclick="openGift()">
+        <div class="gift-lid" id="giftLid"></div>
+        <div class="gift-box">
+          <div class="gift-ribbon-v"></div>
+          <div class="gift-ribbon-h"></div>
+        </div>
+      </div>
+
+      <!-- Popped Teddy Area -->
+      <div id="teddyArea" style="display: none; text-align: center;">
+        <div class="teddy-reveal">🧸🎀</div>
+        <p style="font-size: 1.15rem; font-weight: 700; color: #ffd166; margin-top: 5px;">
+          "A cute teddy bear for the sweetest 18-year-old!"
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. Handwritten Best Wishes Letter -->
+    <section class="letter-card">
+      <div class="letter-header">Dearest Dola,</div>
+      <div class="letter-body">
+        <p>
+          Turning 18 is a truly special milestone. It represents the bridge between sweet childhood memories and the beginning of a remarkable journey toward all the dreams you will achieve.
+        </p>
+        <p>
+          May this milestone year bring you limitless happiness, deep peace, true friendships, and extraordinary success in every step you take. Never lose your gentle heart and radiant cuteness.
+        </p>
+        <p>
+          Keep shining bright, believing in yourself, and enjoying every magical moment that this year has in store for you!
+        </p>
+      </div>
+      <div class="letter-sign">With all the warmest wishes ❤️</div>
+    </section>
+
+    <!-- 5. Confetti Cannon -->
+    <div style="text-align: center; margin-top: 10px;">
+      <button class="action-btn" onclick="blastCheer()" style="background: linear-gradient(135deg, #ffd166, #ff758f); color: #130f26;">
+        🎊 Celebrate & Pop Confetti!
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    // 1. Floating Sky Icons
+    const sky = document.getElementById('skyDecor');
+    const decorIcons = ['🌸', '✨', '🌙', '🌷', '⭐', '🌺', '💖', '🧸', '💫'];
+
+    for (let i = 0; i < 35; i++) {
+      const el = document.createElement('div');
+      el.className = 'floater';
+      el.innerText = decorIcons[Math.floor(Math.random() * decorIcons.length)];
+      el.style.left = `${Math.random() * 100}%`;
+      el.style.fontSize = `${Math.random() * 14 + 18}px`;
+      el.style.animationDuration = `${Math.random() * 8 + 6}s`;
+      el.style.animationDelay = `${Math.random() * 5}s`;
+      sky.appendChild(el);
+    }
+
+    // 2. Confetti Burst
+    function triggerConfetti(count = 90) {
+      confetti({
+        particleCount: count,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#ff758f', '#ffd166', '#e056fd', '#48dbfb', '#ffffff']
+      });
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(() => triggerConfetti(60), 500);
+    });
+
+    // 3. Candle Blow Logic
+    let candleBlown = false;
+    function blowCandle() {
+      const flame = document.getElementById('flame');
+      const status = document.getElementById('cakeStatus');
+      if (!candleBlown) {
+        flame.classList.add('blown');
+        status.innerHTML = "✨ <b>Wish granted!</b> Happy 18th Birthday, Dola! ✨";
+        triggerConfetti(120);
+        candleBlown = true;
+      } else {
+        flame.classList.remove('blown');
+        status.innerText = "Candle is re-lit! Blow it again whenever you like.";
+        candleBlown = false;
+      }
+    }
+
+    // 4. Cake Slice Logic
+    let cakeCut = false;
+    function cutCake() {
+      const cakeBox = document.getElementById('cakeBox');
+      const status = document.getElementById('cakeStatus');
+      if (!cakeCut) {
+        cakeBox.classList.add('cake-split');
+        status.innerHTML = "🍰 <b>First slice cut!</b> Enjoy the sweetest year ahead!";
+        triggerConfetti(100);
+        cakeCut = true;
+      } else {
+        cakeBox.classList.remove('cake-split');
+        status.innerText = "The cake is freshly served! 🎂";
+        cakeCut = false;
+      }
+    }
+
+    // 5. Gift Box Reveal (Teddy Bear)
+    let giftOpened = false;
+    function openGift() {
+      if (!giftOpened) {
+        const lid = document.getElementById('giftLid');
+        const box = document.getElementById('giftBox');
+        const teddy = document.getElementById('teddyArea');
+
+        lid.style.transform = 'translateY(-40px) rotate(-15deg)';
+        lid.style.opacity = '0';
+        box.style.display = 'none';
+        teddy.style.display = 'block';
+
+        triggerConfetti(140);
+        giftOpened = true;
+      }
+    }
+
+    function blastCheer() {
+      triggerConfetti(150);
+    }
+  </script>
+</body>
+</html>
